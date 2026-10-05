@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import importlib
 
 # รายการแพ็กเกจที่จำเป็นต้องใช้
 required_packages = [
@@ -13,13 +14,14 @@ required_packages = [
     "faiss-cpu"
 ]
 
-# บังคับติดตั้งอัตโนมัติหากระบบยังไม่มีแพ็กเกจ
+# บังคับติดตั้งแพ็กเกจอัตโนมัติหากยังไม่มีในระบบ
 for package in required_packages:
     try:
         module_name = package.replace("-", "_").split("[")[0]
-        __import__(module_name)
+        importlib.import_module(module_name)
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        importlib.invalidate_caches()  # ล้าง Cache เพื่อให้ Python มองเห็นแพ็กเกจที่เพิ่งติดตั้งทันที
 
 import streamlit as st
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
