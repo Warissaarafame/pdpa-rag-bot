@@ -36,9 +36,9 @@ try:
     else:
         retriever = load_rag_system()
         
-        # เปลี่ยนชื่อโมเดลเป็น gemini-2.0-flash หรือ gemini-pro ที่รองรับแน่นอน
+        # แก้ไขไวยากรณ์ในบรรทัดนี้ให้ถูกต้องเรียบร้อยแล้ว
         llm = ChatGoogleGenerativeAI(
-            model="model="gemini-pro"", 
+            model="gemini-pro", 
             google_api_key=api_key,
             temperature=0.2
         )
