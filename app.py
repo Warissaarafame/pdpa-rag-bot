@@ -24,7 +24,6 @@ def load_rag_system():
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
     
-    # ใช้โมเดล Multilingual ที่ FastEmbed รองรับมาตรฐาน
     embeddings = FastEmbedEmbeddings(
         model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
@@ -43,15 +42,10 @@ try:
             temperature=0.2
         )
 
-        system_prompt = (
-            "คุณคือผู้เชี่ยวชาญด้านกฎหมาย PDPA ตอบคำถามโดยใช้ข้อมูลจากบริบท (Context) ที่กำหนดให้เท่านั้น "
-            "หากไม่พบคำตอบในบริบท ให้ตอบว่า 'ไม่พบข้อมูลในเอกสารอ้างอิง'\n\n"
-            "Context:\n{context}\n\n"
-            "Question: {input}"
-        )
-
+        # แยกบทบาท system และ human ชัดเจนเพื่อให้ Gemini API ทำงานได้ถูกต้อง
         prompt = ChatPromptTemplate.from_messages([
-            ("system", system_prompt),
+            ("system", "คุณคือผู้เชี่ยวชาญด้านกฎหมาย PDPA ตอบคำถามโดยใช้ข้อมูลจากบริบท (Context) ที่กำหนดให้เท่านั้น หากไม่พบคำตอบในบริบท ให้ตอบว่า 'ไม่พบข้อมูลในเอกสารอ้างอิง'"),
+            ("human", "Context:\n{context}\n\nคำถาม: {input}")
         ])
 
         rag_chain = (
