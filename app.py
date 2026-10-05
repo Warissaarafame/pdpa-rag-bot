@@ -2,7 +2,7 @@ import sys
 import subprocess
 import importlib
 
-# รายการแพ็กเกจที่จำเป็นต้องใช้
+# รายการแพ็กเกจที่จำเป็นต้องใช้ทั้งหมด
 required_packages = [
     "streamlit",
     "langchain",
@@ -11,6 +11,7 @@ required_packages = [
     "langchain-text-splitters",
     "langchain-google-genai",
     "sentence-transformers",
+    "torchvision",
     "faiss-cpu"
 ]
 
@@ -21,7 +22,7 @@ for package in required_packages:
         importlib.import_module(module_name)
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-        importlib.invalidate_caches()  # ล้าง Cache เพื่อให้ Python มองเห็นแพ็กเกจที่เพิ่งติดตั้งทันที
+        importlib.invalidate_caches()
 
 import streamlit as st
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
