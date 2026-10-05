@@ -1,3 +1,26 @@
+import sys
+import subprocess
+
+# รายการแพ็กเกจที่จำเป็นต้องใช้
+required_packages = [
+    "streamlit",
+    "langchain",
+    "langchain-community",
+    "langchain-core",
+    "langchain-text-splitters",
+    "langchain-google-genai",
+    "sentence-transformers",
+    "faiss-cpu"
+]
+
+# บังคับติดตั้งอัตโนมัติหากระบบยังไม่มีแพ็กเกจ
+for package in required_packages:
+    try:
+        module_name = package.replace("-", "_").split("[")[0]
+        __import__(module_name)
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
 import streamlit as st
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
