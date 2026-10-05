@@ -23,8 +23,9 @@ def load_rag_system(api_key):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
     
+    # เปลี่ยนเป็นโมเดล embedding-001 มาตรฐานที่รองรับ 100%
     embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004",
+        model="models/embedding-001",
         google_api_key=api_key
     )
     vectorstore = FAISS.from_documents(splits, embeddings)
@@ -53,7 +54,6 @@ try:
             ("system", system_prompt),
         ])
 
-        # สร้าง RAG Chain ด้วย LCEL (ไม่พึ่งพา langchain.chains)
         rag_chain = (
             {
                 "context": retriever | format_docs,
