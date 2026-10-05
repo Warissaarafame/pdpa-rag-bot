@@ -11,7 +11,7 @@ from langchain_core.runnables import RunnablePassthrough
 st.set_page_config(page_title="PDPA Q&A Bot", page_icon="🤖")
 st.title("🤖 ระบบสอบถามข้อมูล PDPA (RAG System)")
 
-api_key = st.secrets.get("GEMINI_API_KEY") or st.secrets.get("GROQ_API_KEY")
+api_key = st.secrets.get("GEMINI_API_KEY")
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
@@ -36,9 +36,9 @@ try:
     else:
         retriever = load_rag_system()
         
-        # แก้ไขไวยากรณ์ในบรรทัดนี้ให้ถูกต้องเรียบร้อยแล้ว
+        # ใช้โมเดล gemini-1.5-flash หรือ gemini-2.0-flash
         llm = ChatGoogleGenerativeAI(
-            model="gemini-pro", 
+            model="gemini-1.5-flash", 
             google_api_key=api_key,
             temperature=0.2
         )
