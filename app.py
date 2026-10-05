@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -11,7 +12,11 @@ from langchain_core.runnables import RunnablePassthrough
 st.set_page_config(page_title="PDPA Q&A Bot", page_icon="🤖")
 st.title("🤖 ระบบสอบถามข้อมูล PDPA (RAG System)")
 
-api_key = st.secrets.get("GEMINI_API_KEY")
+# ดึงค่า API Key จาก Secrets แล้วผูกเข้ากับ Environment Variable ของระบบโดยตรง
+api_key = st.secrets.get("GEMINI_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
+
+if api_key:
+    os.environ["GOOGLE_API_KEY"] = api_key
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
@@ -36,10 +41,9 @@ try:
     else:
         retriever = load_rag_system()
         
-        # ใช้โมเดล gemini-1.5-flash หรือ gemini-2.0-flash
+        # ชี้ไปยังปลายทางโมเดลล่าสุด
         llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash", 
-            google_api_key=api_key,
+            model="gemini-1.5-flash-latest", 
             temperature=0.2
         )
 
