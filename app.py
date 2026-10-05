@@ -12,7 +12,7 @@ from langchain_core.runnables import RunnablePassthrough
 st.set_page_config(page_title="PDPA Q&A Bot", page_icon="🤖")
 st.title("🤖 ระบบสอบถามข้อมูล PDPA (RAG System)")
 
-# ดึงค่า API Key จาก Secrets แล้วผูกเข้ากับ Environment Variable ของระบบโดยตรง
+# ดึงค่า API Key จาก Secrets
 api_key = st.secrets.get("GEMINI_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
 
 if api_key:
@@ -41,9 +41,10 @@ try:
     else:
         retriever = load_rag_system()
         
-        # ชี้ไปยังปลายทางโมเดลล่าสุด
+        # ใช้ชื่อโมเดลมาตรฐาน gemini-2.0-flash พร้อมส่ง google_api_key กำกับไว้ชัดเจน
         llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash-latest", 
+            model="gemini-2.0-flash", 
+            google_api_key=api_key,
             temperature=0.2
         )
 
