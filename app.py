@@ -24,9 +24,9 @@ def load_rag_system():
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
     
-    # ใช้ FastEmbed (ONNX Engine) - เบามาก ไม่กิน RAM และไม่พึ่งพา Gemini API สำหรับ Embedding
+    # ใช้โมเดล Multilingual ที่ FastEmbed รองรับมาตรฐาน
     embeddings = FastEmbedEmbeddings(
-        model_name="BAAI/bge-m3"
+        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
     vectorstore = FAISS.from_documents(splits, embeddings)
     return vectorstore.as_retriever(search_kwargs={"k": 3})
