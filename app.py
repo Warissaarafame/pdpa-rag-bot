@@ -1,8 +1,9 @@
 import streamlit as st
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
@@ -16,17 +17,16 @@ def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
 @st.cache_resource
-def load_rag_system(api_key):
+def load_rag_system():
     loader = DirectoryLoader('./data', glob="./*.txt", loader_cls=TextLoader)
     docs = loader.load()
     
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
     
-    # เปลี่ยนเป็นโมเดล embedding-001 มาตรฐานที่รองรับ 100%
-    embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/embedding-001",
-        google_api_key=api_key
+    # ใช้ FastEmbed (ONNX Engine) - เบามาก ไม่กิน RAM และไม่พึ่งพา Gemini API สำหรับ Embedding
+    embeddings = FastEmbedEmbeddings(
+        model_name="BAAI/bge-m3"
     )
     vectorstore = FAISS.from_documents(splits, embeddings)
     return vectorstore.as_retriever(search_kwargs={"k": 3})
@@ -35,7 +35,7 @@ try:
     if not api_key:
         st.error("กรุณาตั้งค่า GEMINI_API_KEY ใน Secrets ก่อนใช้งาน")
     else:
-        retriever = load_rag_system(api_key)
+        retriever = load_rag_system()
         
         llm = ChatGoogleGenerativeAI(
             model="gemini-1.5-flash", 
