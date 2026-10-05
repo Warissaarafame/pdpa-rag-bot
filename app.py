@@ -36,13 +36,13 @@ try:
     else:
         retriever = load_rag_system()
         
+        # เปลี่ยนชื่อโมเดลเป็น gemini-2.0-flash หรือ gemini-pro ที่รองรับแน่นอน
         llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash", 
+            model="gemini-2.0-flash", 
             google_api_key=api_key,
             temperature=0.2
         )
 
-        # แยกบทบาท system และ human ชัดเจนเพื่อให้ Gemini API ทำงานได้ถูกต้อง
         prompt = ChatPromptTemplate.from_messages([
             ("system", "คุณคือผู้เชี่ยวชาญด้านกฎหมาย PDPA ตอบคำถามโดยใช้ข้อมูลจากบริบท (Context) ที่กำหนดให้เท่านั้น หากไม่พบคำตอบในบริบท ให้ตอบว่า 'ไม่พบข้อมูลในเอกสารอ้างอิง'"),
             ("human", "Context:\n{context}\n\nคำถาม: {input}")
