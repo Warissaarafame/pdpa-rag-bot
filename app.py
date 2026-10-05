@@ -38,7 +38,7 @@ try:
         
         # เปลี่ยนชื่อโมเดลเป็น gemini-2.0-flash หรือ gemini-pro ที่รองรับแน่นอน
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash", 
+            model="model="gemini-pro"", 
             google_api_key=api_key,
             temperature=0.2
         )
